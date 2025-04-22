@@ -75,13 +75,11 @@ class ChatService {
 
     // Получить количество чатов с непрочитанными сообщениями для пользователя
     fun getUnreadChatsCount(userId: Int): Int =
-        chats.filter { it.hasUser(userId) }
-            .filter { chat ->
-                chat.messages.any { !it.isRead && it.toUserId == userId }
-            }.count()
+        chats.filter { it.hasUser(userId) }.count { chat ->
+            chat.messages.any { !it.isRead && it.toUserId == userId }
+        }
 
-    // Получить список последних сообщений из всех чатов пользователя в виде строк.
-    // Если сообщений нет - "нет сообщений"
+    // Получить список последних сообщений из всех чатов пользователя в виде строк. Если сообщений нет - "нет сообщений"
     fun getLastMessages(userId: Int): List<String> =
         chats.filter { it.hasUser(userId) }
             .map { chat ->
@@ -89,8 +87,7 @@ class ChatService {
                 lastMsg?.let { "От ${it.fromUserId} к ${it.toUserId}: ${it.text}" } ?: "нет сообщений"
             }
 
-    // Получить список последних N сообщений из чата с указанным собеседником.
-    // После вызова все отданные сообщения считаются прочитанными.
+    // Получить список последних N сообщений из чата с указанным собеседником. После вызова все отданные сообщения считаются прочитанными.
     fun getMessagesFromChat(userId: Int, companionUserID: Int, countMessages: Int): List<Message> {
         val chat = chats.find {
             (it.user1Id == userId && it.user2Id == companionUserID) ||
