@@ -118,7 +118,7 @@ class ChatServiceTest {
         Thread.sleep(10)
         val m3 = service.createMessage(1, 2, "msg3")
         val lastMsgsForUser2 = service.getMessagesFromChat(userId = 2, companionUserID = 1, countMessages = 2)
-        assertEquals(listOf(m2, m3).map { it.id }, lastMsgsForUser2.map { it.id })
+        assertEquals(listOf(m3, m2).map { it.id }, lastMsgsForUser2.map { it.id })
         lastMsgsForUser2.forEach { msg ->
             if (msg.toUserId == 2) {
                 assertTrue(msg.isRead)
