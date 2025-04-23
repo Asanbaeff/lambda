@@ -94,16 +94,19 @@ class ChatService {
                     (it.user1Id == companionUserID && it.user2Id == userId)
         } ?: return emptyList()
 
-        // Создаем обратное представление списка сообщений и берем нужное количество последних сообщений
-        val lastMessages = chat.messages.asReversed().take(countMessages)
+        // Преобразуем сообщения в последовательность и берем последние countMessages
+        val lastMessages = chat.messages.asSequence()
+            .take(countMessages) // Берем последние countMessages
+            .toList() // Преобразуем обратно в список
 
-        // Обновляем статус прочтения для непрочитанных сообщений
-        lastMessages.onEach {
+        // Обновляем статус прочтения сообщений
+        lastMessages.forEach {
             if (!it.isRead && it.toUserId == userId) {
                 it.isRead = true
             }
         }
-        return lastMessages
+
+        return lastMessages.reversed() // Возвращаем перевернутый список
     }
 }
 
